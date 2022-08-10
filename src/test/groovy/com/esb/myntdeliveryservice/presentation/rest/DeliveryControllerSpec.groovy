@@ -11,11 +11,7 @@ import org.spockframework.spring.SpringBean
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
-import org.springframework.http.HttpEntity
-import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpMethod
-import org.springframework.http.HttpStatus
-import org.springframework.http.MediaType
+import org.springframework.http.*
 import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 import spock.lang.Specification
@@ -27,10 +23,10 @@ import spock.lang.Unroll
 class DeliveryControllerSpec extends Specification{
 
     @Autowired
-    TestRestTemplate restTemplate
+    private TestRestTemplate restTemplate
 
     @SpringBean
-    VoucherApiGateway voucherApiGateway = Mock()
+    private VoucherApiGateway voucherApiGateway = Mock()
 
     def DELIVERY_COST_URL = "/delivery/calculate-cost"
 
@@ -52,7 +48,7 @@ class DeliveryControllerSpec extends Specification{
             return VoucherApiResponse.builder()
             .code("MYNT")
             .discount("12.25")
-            .expiry("2020-09-16")
+            .expiry(voucherExpDate)
             .build();
         }
 
@@ -66,18 +62,19 @@ class DeliveryControllerSpec extends Specification{
         )
 
         then:
-        def cost = response.getBody().getCostOfDelivery();
+        def cost = response.getBody().getCostOfDelivery()
         response.statusCode == httpStatus
 
         where:
-        condition                                                   | weight    | height    | width | length    | voucherCode   | httpStatus
-        "Rejected Parcel - Exceed exceed 50kg"                      | 51        | 10        | 15    | 10        | null          | HttpStatus.BAD_REQUEST
-        "Heavy Parcel - Exceed exceed 10kg"                         | 15        | 10        | 15    | 10        | null          | HttpStatus.OK
-        "Small Parcel - Volume less than 1500cm3"                   | 10        | 2.9       | 50    | 10        | null          | HttpStatus.OK
-        "Medium Parcel -Volume less than 2500cm3"                   | 10        | 3.9       | 50    | 10        | null          | HttpStatus.OK
-        "Large Parcel - Volume greater than equal to 2500cm3"       | 10        | 5.0       | 50    | 10        | null          | HttpStatus.OK
-        "With Voucher Code - Parcel cost will be discounted"        | 10        | 5.0       | 50    | 10        | "MYNT"        | HttpStatus.OK
-        "With Voucher Code - Discount is greater than parcel cost"  | 10        | 1.0       | 10    | 10        | "MYNT"        | HttpStatus.BAD_REQUEST
+        condition                                                   | weight    | height    | width | length    | voucherCode | voucherExpDate   | httpStatus
+        "Rejected Parcel - Exceed exceed 50kg"                      | 51        | 10        | 15    | 10        | null        | "2022-12-31"  | HttpStatus.BAD_REQUEST
+        "Heavy Parcel - Exceed exceed 10kg"                         | 15        | 10        | 15    | 10        | null        | "2022-12-31"  | HttpStatus.OK
+        "Small Parcel - Volume less than 1500cm3"                   | 10        | 2.9       | 50    | 10        | null        | "2022-12-31"  | HttpStatus.OK
+        "Medium Parcel -Volume less than 2500cm3"                   | 10        | 3.9       | 50    | 10        | null        | "2022-12-31"  | HttpStatus.OK
+        "Large Parcel - Volume greater than equal to 2500cm3"       | 10        | 5.0       | 50    | 10        | null        | "2022-12-31"  | HttpStatus.OK
+        "With Voucher Code - Parcel cost will be discounted"        | 10        | 5.0       | 50    | 10        | "MYNT"      | "2022-12-31"  | HttpStatus.OK
+        "With Voucher Code - Discount is greater than parcel cost"  | 10        | 1.0       | 10    | 10        | "MYNT"      | "2022-12-31"  | HttpStatus.BAD_REQUEST
+        "With Voucher Code - Expired voucher"                       | 10        | 1.0       | 10    | 10        | "MYNT"      | "2020-12-31"  | HttpStatus.BAD_REQUEST
 
     }
 

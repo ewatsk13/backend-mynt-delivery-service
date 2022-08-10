@@ -7,7 +7,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public class VoucherApiGatewayConfig {
@@ -22,9 +21,10 @@ public class VoucherApiGatewayConfig {
         }
     }
 
+    @Bean
     @ConditionalOnProperty(name = "voucher.connection", havingValue = "fake")
     public VoucherApiGateway fakeVoucherApiGateway() {
-        return (voucherCode) -> VoucherApiResponse.builder()
+        return voucherCode -> VoucherApiResponse.builder()
                 .code("MYNT")
                 .discount("20.00")
                 .expiry("2022-12-31")

@@ -1,6 +1,5 @@
 package com.esb.myntdeliveryservice.presentation.dto.mapper;
 
-import com.esb.myntdeliveryservice.core.dto.CostOfDeliveryDto;
 import com.esb.myntdeliveryservice.core.dto.DeliveryDto;
 import com.esb.myntdeliveryservice.presentation.dto.DeliveryRequest;
 

@@ -4,7 +4,6 @@ import com.esb.myntdeliveryservice.core.constant.CustomError;
 import com.esb.myntdeliveryservice.core.exception.VoucherAPIException;
 import com.esb.myntdeliveryservice.core.gateway.VoucherApiGateway;
 import com.esb.myntdeliveryservice.infrastructure.voucherAPI.dto.VoucherApiResponse;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -40,8 +39,9 @@ public class DefaultVoucherApiGateway implements VoucherApiGateway {
             );
             log.info("### Response: {}", response);
             return response.getBody();
+
         }catch (ResourceAccessException ex) {
-            log.error(CustomError.INVALID_VOUCHER_EXCEPTION.getMessage());
+            log.error(CustomError.VOUCHER_API_EXCEPTION.getMessage());
             throw new VoucherAPIException(CustomError.VOUCHER_API_EXCEPTION);
         }
     }

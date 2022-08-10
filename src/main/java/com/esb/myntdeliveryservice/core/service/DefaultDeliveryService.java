@@ -18,7 +18,6 @@ import org.springframework.util.StringUtils;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -47,7 +46,7 @@ public class DefaultDeliveryService implements DeliveryService {
         BigDecimal parcelCost = validateAndCalculateCost(deliveryDto);
         BigDecimal discount = validateAndGetVoucher(deliveryDto.getVoucherCode());
 
-        if (discount.compareTo(parcelCost) > 0) {
+        if (isDiscountExceedCost(discount, parcelCost)) {
             log.error(CustomError.EXCEED_DISCOUNT_ON_COST_EXCEPTION.getMessage());
             throw new ExceedDiscountOnCostException(CustomError.EXCEED_DISCOUNT_ON_COST_EXCEPTION);
         }
@@ -114,5 +113,9 @@ public class DefaultDeliveryService implements DeliveryService {
 
     private boolean isExpired(LocalDate voucherExpirydate) {
         return LocalDate.now().isAfter(voucherExpirydate);
+    }
+
+    private boolean isDiscountExceedCost(BigDecimal discount, BigDecimal parcelCost) {
+       return discount.compareTo(parcelCost) > 0;
     }
 }

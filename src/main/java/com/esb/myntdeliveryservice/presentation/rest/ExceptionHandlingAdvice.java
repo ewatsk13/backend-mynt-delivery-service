@@ -3,7 +3,6 @@ package com.esb.myntdeliveryservice.presentation.rest;
 import com.esb.myntdeliveryservice.core.exception.*;
 import com.esb.myntdeliveryservice.presentation.dto.ErrorResource;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
