@@ -1,0 +1,34 @@
+plugins {
+	id 'org.springframework.boot' version '2.6.10'
+	id 'io.spring.dependency-management' version '1.0.12.RELEASE'
+	id 'groovy'
+}
+
+group = 'com.esb'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	implementation 'org.codehaus.groovy:groovy'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation group: 'org.spockframework', name: 'spock-core', version: '2.1-groovy-3.0'
+	testImplementation group: 'org.spockframework', name: 'spock-spring', version: '2.1-groovy-3.0'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
