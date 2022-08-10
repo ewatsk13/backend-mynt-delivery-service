@@ -11,10 +11,12 @@ import lombok.Setter;
 public enum CustomError {
 
     EXCEED_WEIGHT_EXCEPTION("001400", "Delivery exceed weight"),
-    RULE_ENGINE_EXCEPTION("001500", "Error encountered on rule engine"),
-    VOUCHER_API_EXCEPTION("002500", "Error encountered on voucher API"),
     INVALID_VOUCHER_EXCEPTION("002400", "Invalid voucher code"),
-    EXCEED_DISCOUNT_ON_COST_EXCEPTION("003400","Discount exceeds parcel cost");
+    EXCEED_DISCOUNT_ON_COST_EXCEPTION("003400","Discount exceeds parcel cost"),
+    VOUCHER_EXPIRED_EXCEPTION("004400","Voucher code expired"),
+
+    RULE_ENGINE_EXCEPTION("001500", "Error encountered on rule engine"),
+    VOUCHER_API_EXCEPTION("002500", "Error encountered on voucher API");
 
     private String errCode;
     private String message;

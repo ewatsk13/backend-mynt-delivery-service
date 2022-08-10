@@ -6,6 +6,7 @@ import com.esb.myntdeliveryservice.core.dto.CostOfDeliveryDto;
 import com.esb.myntdeliveryservice.core.dto.DeliveryDto;
 import com.esb.myntdeliveryservice.core.exception.ExceedDiscountOnCostException;
 import com.esb.myntdeliveryservice.core.exception.RuleEngineException;
+import com.esb.myntdeliveryservice.core.exception.VoucherExpiredException;
 import com.esb.myntdeliveryservice.core.gateway.VoucherApiGateway;
 import com.esb.myntdeliveryservice.core.service.costRuleEngine.*;
 import com.esb.myntdeliveryservice.core.service.interfaces.DeliveryService;
@@ -16,6 +17,8 @@ import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -93,9 +96,23 @@ public class DefaultDeliveryService implements DeliveryService {
         if (StringUtils.hasText(voucherCode)) {
             log.info("### Validate and get voucher code {}", voucherCode);
             VoucherApiResponse response = voucherApiGateway.getVoucher(voucherCode);
+            validateVoucherExpiry(response);
             log.info("### Validate and get voucher result {}", response);
             return new BigDecimal(response.getDiscount());
         }
         return new BigDecimal(0);
+    }
+
+    private void validateVoucherExpiry(VoucherApiResponse response){
+        if (response != null) {
+            LocalDate voucherExpirydate = LocalDate.parse(response.getExpiry());
+             if (isExpired(voucherExpirydate)){
+                 throw new VoucherExpiredException(CustomError.VOUCHER_EXPIRED_EXCEPTION);
+             }
+        }
+    }
+
+    private boolean isExpired(LocalDate voucherExpirydate) {
+        return LocalDate.now().isAfter(voucherExpirydate);
     }
 }

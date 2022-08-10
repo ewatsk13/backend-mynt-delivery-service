@@ -27,13 +27,6 @@ public class ExceptionHandlingAdvice {
                 .body(getErrorResource(ex.getMessage(), ex.getErrCode()));
     }
 
-    @ExceptionHandler(VoucherAPIException.class)
-    public ResponseEntity handleVoucherAPIException(VoucherAPIException ex){
-        log.error(ex.getMessage(), ex);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(getErrorResource(ex.getMessage(), ex.getErrCode()));
-    }
-
     @ExceptionHandler(InvalidVoucherException.class)
     public ResponseEntity handleVoucherAPIException(InvalidVoucherException ex){
         log.error(ex.getMessage(), ex);
@@ -45,6 +38,20 @@ public class ExceptionHandlingAdvice {
     public ResponseEntity handleVoucherAPIException(ExceedDiscountOnCostException ex){
         log.error(ex.getMessage(), ex);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(getErrorResource(ex.getMessage(), ex.getErrCode()));
+    }
+
+    @ExceptionHandler(VoucherExpiredException.class)
+    public ResponseEntity handleVoucherExpiredException(VoucherExpiredException ex){
+        log.error(ex.getMessage(), ex);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(getErrorResource(ex.getMessage(), ex.getErrCode()));
+    }
+
+    @ExceptionHandler(VoucherAPIException.class)
+    public ResponseEntity handleVoucherAPIException(VoucherAPIException ex){
+        log.error(ex.getMessage(), ex);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(getErrorResource(ex.getMessage(), ex.getErrCode()));
     }
 
